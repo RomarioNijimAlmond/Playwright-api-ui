@@ -1,6 +1,6 @@
 export interface IPet {
     name: string,
-    photoUrl: string[],
+    photoUrls: string[],
     id?: number,
     category?: {},
     tags?: {},
