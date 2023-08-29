@@ -6,5 +6,7 @@ export enum StatusCode {
     UNAUTHORIZED = 401,
     FORBIDDEN = 403,
     NOT_FOUND = 404,
+    METHOD_NOT_ALLOWED = 405,
+    UNSUPPORTED_MEDIA_TYPE = 415,
     SERVER_ERROR = 500,
 }

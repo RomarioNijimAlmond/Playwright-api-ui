@@ -6,6 +6,7 @@ import { IPet } from "../../../interfaces/PerInterfaces";
 import path from "path";
 const FormData = require('form-data');
 import * as fs from 'fs';
+import { ApplicationUrl } from "../../../common/navigationEnum/ApplicationUrl";
 
 test.describe('sanity api tests for the pet store api', async () => {
     let randomizer: Randomizer;
@@ -58,28 +59,35 @@ test.describe('sanity api tests for the pet store api', async () => {
     })
 
     //-------------------------------------------------------------------
-    test.only('upload an image directly to an existing pet', async ({ request }) => {
+    test('upload an image directly to a pet endpoint', async ({ request}) => {
         await test.step('upload image for pet', async () => {
+            // await page.goto(ApplicationUrl.PET_STORE_SWAGGER);
             const imageName: string = 'pug.jpeg'
             const imageFilePath = path.join(__dirname, '../../../images', imageName);
             const file = fs.readFileSync(imageFilePath);
             const formData = new FormData();
-            formData.append('id', id.toString());
+            // const fileField = document.querySelector('input[type="file"]');
+            // formData.append('file', fileField);
             // formData.append('file', file, {
             //     filename: 'pug.jpeg',
             //     contentType: 'image/jpeg',
             // });
             const response = await request.post(`${baseUrl}/pet/${id}/uploadImage`, {
                 headers: {
-                    'Content-Type': 'form-data',
+                    'Content-Type': 'multipart/form-data',
                 },
-                data: formData,
+                data: `curl -X 'POST' \
+                'https://petstore.swagger.io/v2/pet/100/uploadImage' \
+                -H 'accept: application/json' \
+                -H 'Content-Type: multipart/form-data' \
+                -F 'file=@pug.jpeg;type=image/jpeg'`,
             });
             console.log(await response.body());
             expect(response.status()).toBe(StatusCode.OK);
             expect(response.statusText()).toBe(OK);
         });
     })
+
 
     //-------------------------------------------------------------------
     test('retrieve pet details via GET request', async ({ request }) => {
@@ -218,6 +226,5 @@ test.describe('sanity api tests for the pet store api', async () => {
             expect(res.status()).toBe(StatusCode.NOT_FOUND);
         })
     })
-
 })
 
