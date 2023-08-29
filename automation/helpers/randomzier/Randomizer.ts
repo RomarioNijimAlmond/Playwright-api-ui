@@ -41,4 +41,8 @@ export default class Randomizer {
     public get getRandomLargeNumbers(): number {
         return faker.datatype.number({ min: 1, max: 5000 });
     }
+
+    public get getPetName(): string {
+        return faker.animal.dog();
+    }
 }

@@ -46,4 +46,6 @@ export class BasePage {
         const spanValues = tableData.locator('span', { hasText: value })
         await this.clickElement(spanValues);
 }
+
+    
 }
