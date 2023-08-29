@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 import Randomizer from '../../../helpers/randomzier/Randomizer';
 import { EndPoints } from '../../../common/navigationEnum/EndPoints';
 import { StatusCode } from '../../../helpers/apiStatusCodes/StatusCodes';
-import { IPet } from '../../../interfaces/PerInterfaces';
+import { IPet } from '../../../interfaces/PetInterfaces';
 
 test.describe('api pet negative tests', async () => {
     let randomizer: Randomizer;

@@ -2,7 +2,7 @@ import { expect, request, test } from "@playwright/test";
 import { EndPoints } from "../../../common/navigationEnum/EndPoints";
 import { StatusCode } from "../../../helpers/apiStatusCodes/StatusCodes";
 import Randomizer from "../../../helpers/randomzier/Randomizer";
-import { IPet } from "../../../interfaces/PerInterfaces";
+import { IPet } from "../../../interfaces/PetInterfaces";
 import path from "path";
 const FormData = require('form-data');
 import * as fs from 'fs';

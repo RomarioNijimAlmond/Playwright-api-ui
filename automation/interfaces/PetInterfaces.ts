@@ -36,3 +36,9 @@ export interface IUser {
     phone?: string,
     userStatus?: number,
 }
+
+export interface inventory {
+    available?: string,
+    Pending?: string,
+    Active?: string,
+}

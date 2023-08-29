@@ -17,35 +17,12 @@ test.describe('api sanity tests for the pet store', async () => {
     let store: string = 'store';
     let order: string = 'order';
     let pet: string = 'pet';
-    let currentDate: string;
-    let hours: string
-    let minutes: string
-    let seconds: string
-    let milliseconds: string
-    let formattedDate: string
-
-
-
 
     test.beforeEach(async () => {
         randomizer = new Randomizer();
         let randomNumber: number;
         let randomName: string;
         let randomCategory: string;
-        const today = new Date();
-        const year = today.getUTCFullYear();
-        const month = ('0' + (today.getUTCMonth() + 1)).slice(-2);
-        const day = ('0' + today.getUTCDate()).slice(-2);
-
-        const hours = ('0' + today.getUTCHours()).slice(-2);
-        const minutes = ('0' + today.getUTCMinutes()).slice(-2);
-        const seconds = ('0' + today.getUTCSeconds()).slice(-2);
-        const milliseconds = ('00' + today.getUTCMilliseconds()).slice(-3);
-
-        formattedDate = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${milliseconds}+0000`;
-
-
-        currentDate = `${('0' + (today.getDate())).slice(-2)}-${('0' + (today.getMonth() + 1)).slice(-2)}-${today.getFullYear()}`;
     })
 
     test.afterEach(async ({ context }) => {
@@ -57,7 +34,6 @@ test.describe('api sanity tests for the pet store', async () => {
             "id": orderId,
             "petId": petId,
             "quantity": 1,
-            // "shipDate": formattedDate,
             "status": "placed",
             "complete": true
         }
@@ -90,7 +66,6 @@ test.describe('api sanity tests for the pet store', async () => {
                     "id": "invalid",
                     "petId": "invalid",
                     "quantity": -1,
-                    "shipDate": "invalid-date",
                     "status": "invalid-status",
                     "complete": "invalid"
                 }
@@ -109,7 +84,6 @@ test.describe('api sanity tests for the pet store', async () => {
                 "id": orderId,
                 "petId": petId,
                 "quantity": 1,
-                // "shipDate": formattedDate,
                 "status": "placed",
                 "complete": true
             })
@@ -147,6 +121,71 @@ test.describe('api sanity tests for the pet store', async () => {
     test('delete order', async ({ request }) => {
         await test.step('delete order number 700 that was placed earlier', async () => {
             const response = await request.delete(`${baseUrl}/${store}/${order}/${orderId}`);
+            expect(response.status()).toBe(StatusCode.OK);
+        })
+
+        await test.step('fetch the same order ID and validate it does not exist', async () => {
+            const response = await request.get(`${baseUrl}/${store}/${order}/${orderId}`);
+            const responseJson = await response.json();
+            expect(responseJson).toEqual({
+                "code": 1,
+                "type": "error",
+                "message": "Order not found"
+            })
+        })
+    })
+
+    //---------------------------------------------------------------
+    test('retrieve data from the inventory', async ({ request }) => {
+        await test.step('get inventory data from the inventroy endpoint', async () => {
+            const response = await request.get(`${baseUrl}/${store}/inventory`);
+            const responseJson = await response.json();
+            expect(responseJson).toBeDefined();
+            expect(response.status()).toBe(StatusCode.OK);
+            const propertyCount = Object.keys(responseJson).length;
+            const expectedCount = 28;
+            expect(propertyCount).toBe(expectedCount);
+            expect(responseJson).toHaveProperty('available');
+            expect(responseJson).toHaveProperty('Pending');
+        })
+
+    })
+
+    //---------------------------------------------------------------
+
+
+    /**
+     * @description the pending pets are not getting increased in the inventory when creating new pets and orders which is a BUG IMO
+     */
+    test.fixme('validate pet integration with inventory', async ({ request }) => {
+        await test.step('get inventory pet available status first', async () => {
+            const response = await request.get(`${baseUrl}/${store}/inventory`);
+            const responseJson = await response.json();
+            expect(responseJson).toHaveProperty('pending', 21);
+        })
+
+        await test.step('create new pet in available status', async () => {
+            const response = await request.post(`${baseUrl}/${store}/${order}`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                data: {
+                    "id": 7000,
+                    "petId": 5000,
+                    "quantity": 1,
+                    // "shipDate": formattedDate,
+                    "status": "pending",
+                    "complete": true
+                }
+            })
+
+            expect(response.status()).toBe(StatusCode.OK);
+        })
+
+        await test.step('retrieve the inventory and validate the pending status increased', async () => {
+            const response = await request.get(`${baseUrl}/${store}/inventory`);
+            const responseJson = await response.json();
+            expect(responseJson).toHaveProperty('pending', 22);
         })
     })
 })
