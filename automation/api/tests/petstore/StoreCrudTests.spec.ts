@@ -90,6 +90,8 @@ test.describe('api sanity tests for the pet store', async () => {
         })
     })
 
+    //---------------------------------------------------------------
+
     test('get a non existing order', async ({ request }) => {
         await test.step('retrieve an order ID that does not exist and validate there is no such order', async () => {
             const response = await request.get(`${baseUrl}/${store}/${order}/1`);

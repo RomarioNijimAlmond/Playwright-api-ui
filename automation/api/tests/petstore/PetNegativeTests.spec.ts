@@ -103,7 +103,7 @@ test.describe('api pet negative tests', async () => {
             ],
             "status": "available"
         }
-        await test.step('make an unsupported content type request to an endpoint and validate status responds with bad request', async () => {
+        await test.step('make an unsupported content type request to an endpoint and validate status responds with 415 status code', async () => {
             const response = await request.post(`${EndPoints.PET_STORE_BASE_URL}/${pet}`, {
                 headers: {
                     "Content-Type": 'text/html',
@@ -124,13 +124,17 @@ test.describe('api pet negative tests', async () => {
                     'Content-Type': 'application/json'
                 }
             })
+            const responseJson = await response.json();
+            expect(responseJson).toHaveProperty('message', 'no data')
             expect(response.status()).toBe(StatusCode.METHOD_NOT_ALLOWED)
         })
     })
 
     //--------------------------------------------------------------
 
-    // added fixme => this test passes which should not - this is a bug since the pet property has two required field by documentation
+    /**
+     * @description added fixme => this test passes which should not - this is a bug since the pet property has two required field by documentation
+     */
 
     test.fixme('create a post request without required fields', async ({ request }) => {
         const data = {
@@ -154,7 +158,7 @@ test.describe('api pet negative tests', async () => {
                 },
                 data,
             })
-            expect(response.status()).toBe(StatusCode.METHOD_NOT_ALLOWED);
+            expect(response.status()).toBe(StatusCode.BAD_REQUEST);
             const responseJson = await response.json();
             expect(responseJson).not.toHaveProperty('name');
             expect(responseJson).not.toHaveProperty('photoUrls');
@@ -179,6 +183,10 @@ test.describe('api pet negative tests', async () => {
 
     //--------------------------------------------------------------
 
+    /**
+     * @description this test should get a status code of 400 since it is a bad request - I recieved a server error instead
+     */
+
     test('pass an invalid type of a property in a post request', async ({ request }) => {
         const data = {
             "id": 'string id',
@@ -200,7 +208,6 @@ test.describe('api pet negative tests', async () => {
                     'Content-Type': 'application/json',
                 }, data
             })
-
             expect(response.status()).not.toBe(StatusCode.OK);
             expect(response.status()).toBe(StatusCode.SERVER_ERROR)
             expect(response.statusText()).toBe('Server Error')

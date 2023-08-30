@@ -45,4 +45,8 @@ export default class Randomizer {
     public get getPetName(): string {
         return faker.animal.dog();
     }
+
+    public get getRandomPhoneNumber(): string {
+        return faker.phone.number()
+    }
 }

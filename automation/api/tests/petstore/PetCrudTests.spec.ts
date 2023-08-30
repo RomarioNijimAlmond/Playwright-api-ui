@@ -7,6 +7,8 @@ import path from "path";
 const FormData = require('form-data');
 import * as fs from 'fs';
 import { ApplicationUrl } from "../../../common/navigationEnum/ApplicationUrl";
+import axios from 'axios';
+
 
 test.describe('sanity api tests for the pet store api', async () => {
     let randomizer: Randomizer;
@@ -20,6 +22,7 @@ test.describe('sanity api tests for the pet store api', async () => {
     let uploadImage: string = 'uploadImage';
     let pet: string = 'pet'
 
+
     test.beforeEach(async () => {
         randomizer = new Randomizer();
         randomNumber = randomizer.getRandomNumbers;
@@ -29,7 +32,7 @@ test.describe('sanity api tests for the pet store api', async () => {
 
     test('create a pet via POST request', async ({ request }) => {
         await test.step('create a new pet', async () => {
-            const petData = {
+            const data = {
                 "id": id,
                 "category": {
                     "id": 610,
@@ -47,11 +50,12 @@ test.describe('sanity api tests for the pet store api', async () => {
                 ],
                 "status": "available"
             }
+
             const response = await request.post(`${baseUrl}/${pet}`, {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                data: petData,
+                data,
             })
             expect(response.status()).toBe(StatusCode.OK);
             expect(response.statusText()).toBe(OK)
@@ -59,34 +63,26 @@ test.describe('sanity api tests for the pet store api', async () => {
     })
 
     //-------------------------------------------------------------------
-    test('upload an image directly to a pet endpoint', async ({ request}) => {
-        await test.step('upload image for pet', async () => {
-            // await page.goto(ApplicationUrl.PET_STORE_SWAGGER);
-            const imageName: string = 'pug.jpeg'
-            const imageFilePath = path.join(__dirname, '../../../images', imageName);
-            const file = fs.readFileSync(imageFilePath);
-            const formData = new FormData();
-            // const fileField = document.querySelector('input[type="file"]');
-            // formData.append('file', fileField);
-            // formData.append('file', file, {
-            //     filename: 'pug.jpeg',
-            //     contentType: 'image/jpeg',
-            // });
-            const response = await request.post(`${baseUrl}/pet/${id}/uploadImage`, {
+    test('upload an image directly to a pet endpoint', async ({ request }) => {
+        await test.step('upload a pet image directly via api', async () => {
+            const file = path.resolve(__dirname, '../../../images/pug.jpeg');
+            const image = fs.readFileSync(file);
+            const response = await request.post(`${baseUrl}/${pet}/${id}/uploadImage`, {
                 headers: {
+                    'Accept': "*/*",
                     'Content-Type': 'multipart/form-data',
                 },
-                data: `curl -X 'POST' \
-                'https://petstore.swagger.io/v2/pet/100/uploadImage' \
-                -H 'accept: application/json' \
-                -H 'Content-Type: multipart/form-data' \
-                -F 'file=@pug.jpeg;type=image/jpeg'`,
-            });
-            console.log(await response.body());
+                multipart: {
+                    file: {
+                        name: file,
+                        mimeType: 'image/jpeg',
+                        buffer: image,
+                    },
+                }
+            })
             expect(response.status()).toBe(StatusCode.OK);
-            expect(response.statusText()).toBe(OK);
-        });
-    })
+        })
+    });
 
 
     //-------------------------------------------------------------------
@@ -224,6 +220,8 @@ test.describe('sanity api tests for the pet store api', async () => {
         await test.step('validate there is no such resource with the deleted id anymore', async () => {
             const res = await request.get(`${baseUrl}/${pet}/${id}`);
             expect(res.status()).toBe(StatusCode.NOT_FOUND);
+            const responseJson = await res.json();
+            expect(responseJson).toHaveProperty('message', 'Pet not found');
         })
     })
 })
