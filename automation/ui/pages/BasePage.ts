@@ -1,4 +1,4 @@
-import { Locator, Page } from "@playwright/test";
+import { Locator, Page, expect } from "@playwright/test";
 import { ApplicationUrl } from "../../common/navigationEnum/ApplicationUrl";
 export class BasePage {
 
@@ -43,9 +43,95 @@ export class BasePage {
     protected async selectValueFromDatePicker(dateTableLocator: string, value: string) {
         const table = this.page.locator(dateTableLocator);
         const tableData = table.locator('tbody td');
-        const spanValues = tableData.locator('span', { hasText: value })
+        const spanValues = tableData.locator('td', { hasText: value })
         await this.clickElement(spanValues);
-}
+    }
 
-    
+    public async alertGetTextAndAccept(text: string) {
+        this.page.on('dialog', async (dialog) => {
+            const message = dialog.message();
+            await this.waitForVisiblityOfElement(message);
+            if (message.trim().includes(text)) {
+                expect(message).toContain(text);
+                await dialog.accept();
+            } else {
+                throw new Error(`the actual alert text does not contain the expected alert text`);
+            }
+        });
+    }
+
+    public async alertGetTextAndDismiss(text: string) {
+        this.page.on('dialog', async (dialog) => {
+            const message = dialog.message();
+            await this.waitForVisiblityOfElement(message);
+            if (message.trim().includes(text)) {
+                expect(message).toContain(text);
+                await dialog.dismiss();
+            } else {
+                throw new Error(`the actual alert text does not contain the expected alert text`);
+            }
+        });
+    }
+
+    public async waitForVisiblityOfElement(element: (string | Locator), visibilityTimeout?: number) {
+        const elementLocator = element as Locator;
+        if (typeof element === 'string') {
+            const domLocator = this.page.locator(element);
+            await domLocator.waitFor({ state: "visible", timeout: visibilityTimeout });
+        } else if (element === elementLocator) {
+            await element.waitFor({ state: "visible" });
+        }
+
+    }
+
+    public async waitForInvisibiltyOfElement(element: (string | Locator)) {
+        const elementLocator = element as Locator;
+        if (typeof element === 'string') {
+            const domLocator = this.page.locator(element);
+            await domLocator.waitFor({ state: "hidden" });
+        } else if (element === elementLocator) {
+            await element.waitFor({ state: "hidden" });
+        }
+    }
+
+    public async hover(locator: (string | Locator)) {
+        const element = locator as Locator
+        if (typeof locator === 'string') {
+            await this.page.locator(locator).hover();
+        } else if (locator === element) {
+            await element.hover();
+        } else {
+            return null;
+        }
+    }
+
+    public async alertAccept() {
+        this.page.on('dialog', async (dialog) => await dialog.accept());
+    }
+
+    public async alertDismiss() {
+        this.page.on('dialog', dialog => {
+            dialog.dismiss();
+        });
+    }
+
+    public async alertGetText() {
+        this.page.on('dialog', dialog => {
+            dialog.message();
+        });
+    }
+
+    public async getCurrentMonth() {
+        let month = new Date();
+        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "Septemer", "October", "November", "December"];
+        const monthString = monthNames[month.getMonth()];
+        return monthString;
+    }
+
+    public async getCurrentYear() {
+        let year = new Date();
+        let currentYear: string = `${year.getFullYear()}`;
+        return currentYear;
+    }
+
 }

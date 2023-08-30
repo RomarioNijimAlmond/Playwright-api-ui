@@ -4,7 +4,7 @@ import { StatusCode } from '../../../helpers/apiStatusCodes/StatusCodes';
 import { IUser } from '../../../interfaces/PetInterfaces';
 import Randomizer from '../../../helpers/randomzier/Randomizer';
 
-test.describe.only('api crud tests for users endpoint', async () => {
+test.describe('api crud tests for users endpoint', async () => {
     let baseUrl = EndPoints.PET_STORE_BASE_URL;
     let user: string = 'user';
     let randomizer: Randomizer;

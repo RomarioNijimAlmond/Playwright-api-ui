@@ -14,8 +14,6 @@ test.describe('test', async() => {
         await context.clearCookies();
     })
 
-    test.only('s', async() => {
-        await basePage.loadApplication(ApplicationUrl.url)
-    })
+   
 
 })

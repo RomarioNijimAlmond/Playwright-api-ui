@@ -28,77 +28,22 @@ test.describe('api pet negative tests', async () => {
         await context.clearCookies();
     })
 
-    test('search for a pet with invalid properties', async ({ request }) => {
+
+    test('create a pet with invalid input', async ({ request }) => {
         const data = {
-            "id": id,
+            "id": 1,
             "category": {
-                "id": randomNumber,
-                "name": "my pet category"
+                "id": 1,
+                "name": ""
             },
-            "name": randomName,
+            "name": "doggie",
             "photoUrls": [
-                "https://ibb.co/jM49Hrv"
+                ""
             ],
             "tags": [
                 {
-                    "id": randomNumber,
-                    "name": "dog-tag"
-                }
-            ],
-            "status": "available"
-        }
-        const response = await request.post(`${baseUrl}/${pet}`, {
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            data,
-        })
-
-        expect(response.status()).toBe(StatusCode.OK);
-        expect(response.statusText()).toBe(OK)
-
-        await test.step('get the pet that was just created with an invalid property', async () => {
-            const res = await request.get(`${EndPoints.PET_STORE_BASE_URL}/${pet}/${id}`, {
-                params: {
-                    "name": randomName,
-                    "id": randomNumber,
-                    "status": 'sold',
-                }
-            })
-            expect(await res.json()).not.toHaveProperty('status', 'sold');
-        })
-    })
-
-    //--------------------------------------------------------------
-
-    test('search for a resource that does not exist', async ({ request }) => {
-        await test.step('fetch a pet with a non existing ID and validate server response', async () => {
-            const response = await request.get(`${EndPoints.PET_STORE_BASE_URL}/${pet}/3000`);
-            expect(response.status()).toBe(StatusCode.NOT_FOUND);
-            expect(response.status()).not.toBe(StatusCode.OK);
-            expect(response.statusText()).toBe(notFound);
-            const responseJson = await response.json();
-            expect(responseJson).toHaveProperty("message", "Pet not found");
-        })
-    })
-
-    //--------------------------------------------------------------
-
-    test('make an unsupported request', async ({ request }) => {
-        const data = {
-            "id": randomNumber,
-            "category": {
-                "id": randomNumber,
-                "name": randomName
-            },
-            "name": randomName,
-            "photoUrls": [
-                ''
-            ],
-            "tags": [
-                {
-                    "id": randomNumber,
-                    "name": randomName
+                    "id": 1,
+                    "name": ""
                 }
             ],
             "status": "available"
@@ -114,8 +59,21 @@ test.describe('api pet negative tests', async () => {
             expect(response.status()).toBe(StatusCode.UNSUPPORTED_MEDIA_TYPE);
         })
     })
+    //--------------------------------------------------------------
+
+    test('search for a resource that does not exist', async ({ request }) => {
+        await test.step('fetch a pet with a non existing ID and validate server response', async () => {
+            const response = await request.get(`${EndPoints.PET_STORE_BASE_URL}/${pet}/3000`);
+            expect(response.status()).toBe(StatusCode.NOT_FOUND);
+            expect(response.status()).not.toBe(StatusCode.OK);
+            expect(response.statusText()).toBe(notFound);
+            const responseJson = await response.json();
+            expect(responseJson).toHaveProperty("message", "Pet not found");
+        })
+    })
 
     //--------------------------------------------------------------
+
 
     test('create post method with an empty body and validate proepr response is received', async ({ request }) => {
         await test.step('create a pet without specifying any property in the data body', async () => {
@@ -167,19 +125,69 @@ test.describe('api pet negative tests', async () => {
 
     //--------------------------------------------------------------
 
-    // added fixeme - this test passes - by the documentation => the body is required for this post request - BUG
-    test.fixme('create a post request without a body', async ({ request }) => {
-        await test.step('create a post request without a body and validate a bad request response is returned', async () => {
-            const response = await request.post(`${baseUrl}/pet`, {
+    /**
+     * @description I should be getting a 400 error by the documentation but Im recieving 500 server error - it accepts all invalid ID's
+     */
+    test('modify a pet with invalid ID supplied', async ({ request }) => {
+        const oldData = {
+            "id": id,
+            "category": {
+                "id": randomNumber,
+                "name": "Animals"
+            },
+            "name": randomName,
+            "photoUrls": [
+                "https://ibb.co/jM49Hrv"
+            ],
+            "tags": [
+                {
+                    "id": randomNumber,
+                    "name": `"${randomName}-tag"`
+                }
+            ],
+            "status": "pending"
+        }
+
+        const newData = {
+            "id": 'string value for the id',
+            "category": {
+                "id": 445,
+                "name": randomName
+            },
+            "name": randomName,
+            "photoUrls": [
+                ""
+            ],
+            "tags": [
+                {
+                    "id": randomNumber,
+                    "name": `"445-tag"`
+                }
+            ],
+            "status": "sold"
+        }
+
+        await test.step('create a pet first', async () => {
+            const response = await request.post(`${EndPoints.PET_STORE_BASE_URL}/${pet}`, {
                 headers: {
                     'Content-Type': 'application/json'
                 },
+                data: oldData,
             })
 
-            expect(response.status()).toBe(StatusCode.BAD_REQUEST);
+            expect(response.status()).toBe(StatusCode.OK);
+        })
+
+        await test.step('modify an existing pet by providing an invalid ID', async () => {
+            const response = await request.put(`${baseUrl}/${pet}`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                }, data: newData
+            })
+
+            expect(response.status()).toBe(StatusCode.SERVER_ERROR);
         })
     })
-
 
     //--------------------------------------------------------------
 

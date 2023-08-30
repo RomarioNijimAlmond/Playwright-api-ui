@@ -4,11 +4,7 @@ import { StatusCode } from "../../../helpers/apiStatusCodes/StatusCodes";
 import Randomizer from "../../../helpers/randomzier/Randomizer";
 import { IPet } from "../../../interfaces/PetInterfaces";
 import path from "path";
-const FormData = require('form-data');
 import * as fs from 'fs';
-import { ApplicationUrl } from "../../../common/navigationEnum/ApplicationUrl";
-import axios from 'axios';
-
 
 test.describe('sanity api tests for the pet store api', async () => {
     let randomizer: Randomizer;
@@ -19,9 +15,7 @@ test.describe('sanity api tests for the pet store api', async () => {
     let OK: string = 'OK';
     let id: number = 900;
     let findByStatus: string = 'findByStatus';
-    let uploadImage: string = 'uploadImage';
     let pet: string = 'pet'
-
 
     test.beforeEach(async () => {
         randomizer = new Randomizer();
@@ -84,7 +78,6 @@ test.describe('sanity api tests for the pet store api', async () => {
         })
     });
 
-
     //-------------------------------------------------------------------
     test('retrieve pet details via GET request', async ({ request }) => {
         await test.step('fetch the data to validate the data is stored in the server from previous test', async () => {
@@ -112,12 +105,14 @@ test.describe('sanity api tests for the pet store api', async () => {
                 }
             });
 
+            const responseJson: IPet = await res.json();
             expect(res.status()).toBe(StatusCode.OK);
             expect(res.statusText()).toBe(OK);
-            expect(await res.json()).toEqual(data);
+            expect(responseJson).toEqual(data);
 
         })
     })
+
     //-------------------------------------------------------------------
     test('update an existing pet', async ({ request }) => {
         const newData = {
@@ -139,7 +134,7 @@ test.describe('sanity api tests for the pet store api', async () => {
             "status": "pending"
         }
         await test.step('update an existing pet from previous test', async () => {
-            const response = await request.put(`${EndPoints.PET_STORE_BASE_URL}/${pet}`, {
+            const response = await request.put(`${baseUrl}/${pet}`, {
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -148,8 +143,8 @@ test.describe('sanity api tests for the pet store api', async () => {
             expect(response.status()).toBe(StatusCode.OK);
         })
 
-        await test.step('validate the data now matches the new updated data with specific properties', async () => {
-            const res = await request.get(`${EndPoints.PET_STORE_BASE_URL}/${pet}/${id}`, {
+        await test.step('validate the response data now matches the new updated data with the specific properties', async () => {
+            const res = await request.get(`${baseUrl}/${pet}/${id}`, {
             })
             const responseJson: IPet = await res.json();
             expect([responseJson.id, responseJson.name, responseJson.status]).toEqual([newData.id, newData.name, newData.status]);
@@ -158,8 +153,8 @@ test.describe('sanity api tests for the pet store api', async () => {
 
     //------------------------------------------------------------------
 
-    test('find pet by pending status #1', async ({ request }) => {
-        await test.step('find a pet by pending status', async () => {
+    test('find pet by status #1', async ({ request }) => {
+        await test.step('find a pet in pending status', async () => {
             const response = await request.get(`${baseUrl}/${pet}/${findByStatus}`, {
                 params: {
                     status: 'pending'
@@ -175,7 +170,7 @@ test.describe('sanity api tests for the pet store api', async () => {
 
     //------------------------------------------------------------------
     test('find pet by status #2', async ({ request }) => {
-        await test.step('find a pet by available status', async () => {
+        await test.step('find a pet in available status', async () => {
             const response = await request.get(`${baseUrl}/${pet}/${findByStatus}`, {
                 params: {
                     status: 'available'
@@ -191,7 +186,7 @@ test.describe('sanity api tests for the pet store api', async () => {
     //------------------------------------------------------------------
 
     test('find pet by status #3', async ({ request }) => {
-        await test.step('find a pet by sold status', async () => {
+        await test.step('find a pet in sold status', async () => {
             const response = await request.get(`${baseUrl}/${pet}/${findByStatus}`, {
                 params: {
                     status: 'sold'
@@ -208,8 +203,8 @@ test.describe('sanity api tests for the pet store api', async () => {
     //-------------------------------------------------------------------
 
     test('delete an existing pet', async ({ request }) => {
-        await test.step('delete pet with the id from previous test', async () => {
-            const response = await request.delete(`${EndPoints.PET_STORE_BASE_URL}/${pet}/${id}`, {
+        await test.step(`delete pet with the ${id} id from previous test`, async () => {
+            const response = await request.delete(`${baseUrl}/${pet}/${id}`, {
                 headers: {
                     'Content-Type': 'application/json',
                 }
