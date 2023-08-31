@@ -8,6 +8,7 @@ This Project was done by using the `Playwright Test Automation Framework` using 
 The API project was done on the petstore APIs.
 The UI project was done of a React Big Scheduler infinite scroll UI
 petstore APIs - https://petstore.swagger.io/?fbclid=IwAR0IJGoXI4F2sWcQ3S-7ukN9KOdDgGp-m2V9Ih2KaCOPEFVEYBBJjK95x1Y#/
+ 
  React Big Scheduler examples- https://stephenchou1017.github.io/scheduler/#/infinitescroll 
 
 ## Clone Project
