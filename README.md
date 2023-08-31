@@ -76,6 +76,21 @@ open a terminal in your IDE in the same directory where the tests are located an
   npx playwright test --workers=1
 ```
 
+To run the UI tests - navigate to the ui directory and the run the tests the same way as explanied above.
+```bash
+  cd ui
+```
+
+Inside the UI folder you'll have two folders:
+* pages - which contains the infra of the tested app with it's page objects
+* tests - where the tests are written and run
+
+The rest of the project folders contain folders for all of the project's infra such as:
+* common
+* helpers
+* interfaces
+* navigation enums
+
 ## Notes
 
 * some of the API endpoints for the petstore responds with an invalid response when performing negative testing methods
@@ -95,5 +110,5 @@ You can fork the project and submit a PR that will under go a code review.
 
 ## Feedback
 
-If you have any feedback, please reach out to me at romario.nijim11@gmail.com
+I hope you enjoyed my project, If you have any feedback, please reach out to me at romario.nijim11@gmail.com
 
