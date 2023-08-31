@@ -76,7 +76,7 @@ You can fork the project and submit a PR that will under go a code review.
 * the tests that involves the React Big Schedular fails due to the fact that the website is not stable to perform automated tests on it - there were many issues found that prevented from the tests to pass due to the website's bugs, without these bugs, the tests would pass.
 * issues found:
   * the cell values in the schedular in an automated environment are not clickable (you can try manually when the browser is in automated mode - tried different techniques such as scrolling into view, applying focus, searching if it is inside an iframe, and many more different element manipulations)
-  * the schedular does not save your created events
+  * the schedular does not save your created events which lacks the core functionality of the scheduler - BUG.
   * the displayed date keeps between months on every movement on the page which makes very unstable - the same goes for the date view, everytime you displayt he same date it always gives you a different view which can interfere with the test validations
 
 ## Feedback
