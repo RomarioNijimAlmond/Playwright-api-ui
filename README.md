@@ -63,12 +63,6 @@ open a terminal in your IDE in the same directory where the tests are located an
 ```bash
   npx playwright test --workers=1
 ```
-## Contributing
-
-Contributions are always welcome!
-
-You can fork the project and submit a PR that will under go a code review.
-
 
 ## Notes
 
@@ -80,6 +74,12 @@ You can fork the project and submit a PR that will under go a code review.
   * the cell values in the schedular in an automated environment are not clickable (you can try to reproduce it manually when the browser is in automated mode - tried different techniques such as scrolling into view, applying focus, searching if it is inside an iframe, and many more different element manipulations)
   * the schedular does not save your created events which lacks the core functionality of the scheduler.
   * the displayed date keeps between months on every movement on the page which makes very unstable - the same goes for the date view, everytime you displayt he same date it always gives you a different view which can interfere with the test validations
+ 
+## Contributing
+
+Contributions are always welcome!
+
+You can fork the project and submit a PR that will under go a code review.
 
 ## Feedback
 
