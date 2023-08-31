@@ -121,7 +121,7 @@ export class BasePage {
         });
     }
 
-    public async getCurrentMonth(monthNaming: string) {
+    public async getCurrentMonthName(monthNaming: string) {
         let month = new Date();
         switch (monthNaming) {
             case 'fullMonthName':
@@ -135,13 +135,19 @@ export class BasePage {
         }
     }
 
+    public async getCurrentMonth() {
+        let month = new Date();
+        let currentMonth: string = `${('0' + (month.getMonth() + 1)).slice(-2)}`;
+        return currentMonth;
+    }
+
     public async getCurrentYear() {
         let year = new Date();
         let currentYear: string = `${year.getFullYear()}`;
         return currentYear;
     }
 
-     public async getCurrentDay() {
+    public async getCurrentDay() {
         let day = new Date();
         let currentDay: string = `${(day.getDate())}`;
         return currentDay;
@@ -174,9 +180,34 @@ export class BasePage {
     }
 
     public async getCurrentMonthAndYear() {
-        const currentMonth = await this.getCurrentMonth('fullMonthName');
+        const currentMonth = await this.getCurrentMonthName('fullMonthName');
         const currentYear = await this.getCurrentYear();
         const currentMonthAndYear = `${currentMonth} ${currentYear}`;
         return currentMonthAndYear;
+    }
+
+    public async waitForTimeout(milliSeconds: number) {
+        await this.page.waitForTimeout(milliSeconds);
+    }
+
+    public async getCurrentDayName(dayNameOption: string) {
+        const date = new Date();
+        switch (dayNameOption) {
+            case 'short':
+                const shortDayName = date.toLocaleDateString('default', { weekday: 'short' });
+                return shortDayName;
+            case 'long':
+                const longtDayName = date.toLocaleDateString('default', { weekday: 'long' });
+                return longtDayName;
+        }
+    }
+
+    public async scrollIntoViewIfNeeded(element: (string | Locator)) {
+        const locatorElement = element as Locator;
+        if (typeof element === 'string') {
+            await this.page.locator(element).scrollIntoViewIfNeeded();
+        } else if (element === locatorElement) {
+            await element.scrollIntoViewIfNeeded();
+        }
     }
 }

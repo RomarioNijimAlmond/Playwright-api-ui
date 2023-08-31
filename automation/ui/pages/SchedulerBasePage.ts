@@ -8,7 +8,7 @@ export class SchedulerBasePage extends BasePage {
     }
 
     public async getColumnTableIndex(tableRowLocator: string, column: string) {
-        const columnHeaders = await this.page.$$(`${tableRowLocator} thead th`);
+        const columnHeaders = await this.page.locator(`${tableRowLocator} thead th`).all();
         for (let i = 0; i < columnHeaders.length; i++) {
             if (await columnHeaders[i].innerText() === column) {
                 return i;

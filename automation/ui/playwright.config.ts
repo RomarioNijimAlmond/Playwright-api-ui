@@ -30,7 +30,8 @@ export default defineConfig({
     screenshot: 'on',
     video: 'retain-on-failure',
     trace: 'on',
-    contextOptions: {},
+    contextOptions: {
+    },
     launchOptions: {
       headless: process.env.CI ? true : false,
       slowMo: 500,
@@ -43,6 +44,7 @@ export default defineConfig({
       name: 'chromium',
       use: { ...devices['Desktop Chrome'], viewport: { width: 1400, height: 900 } },
     },
+
 
     // {
     //   name: 'firefox',
