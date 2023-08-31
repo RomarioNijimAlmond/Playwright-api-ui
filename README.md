@@ -75,7 +75,8 @@ You can fork the project and submit a PR that will under go a code review.
 * the tests that contain these invalid responses have a `fixme` keyword near the test hook - these tests will be skipped inc ase running in CI untill they are fixed, if you wanna run these tests, make sure you remove the `fixme` keyword.
 * the tests that involves the React Big Schedular fails due to the fact that the website is not stable to perform automated tests on it - there were many issues found that prevented from the tests to pass due to the website's bugs, without these bugs, the tests would pass.
 * issues found:
-  * the cell values in the schedular in an automated environment are not clickable (you can try manually when the browser is in automated mode - tried different techniques such as scrolling into view, applying focus, searching if it is inside an iframe, and many more different element manipulations)
+  * when first entering the month in the infinite scroll and you choose a specific month such as August - it then displays October (reproduces manually as well) - for a workaround you'll need to choose your desired date again. 
+  * the cell values in the schedular in an automated environment are not clickable (you can try to reproduce it manually when the browser is in automated mode - tried different techniques such as scrolling into view, applying focus, searching if it is inside an iframe, and many more different element manipulations)
   * the schedular does not save your created events which lacks the core functionality of the scheduler.
   * the displayed date keeps between months on every movement on the page which makes very unstable - the same goes for the date view, everytime you displayt he same date it always gives you a different view which can interfere with the test validations
 
