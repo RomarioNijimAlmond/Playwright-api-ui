@@ -68,7 +68,7 @@ test.describe('test', async () => {
 
 
         await test.step('add a new event ', async () => {
-            await infiniteScrollPage.scheduleEvent(resource2, 'Mon 8/21', alertSchedulerCreationMessage);
+            await infiniteScrollPage.scheduleEvent(resource2, currentDaySchedulerColumn, alertSchedulerCreationMessage);
         })
 
         await test.step('hover on one of the events and observe popup content', async () => {
