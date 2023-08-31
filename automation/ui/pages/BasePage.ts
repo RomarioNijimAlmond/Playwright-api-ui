@@ -42,9 +42,9 @@ export class BasePage {
      */
     protected async selectValueFromDatePicker(dateTableLocator: string, value: string) {
         const table = this.page.locator(dateTableLocator);
-        const tableData = table.locator('tbody td');
-        const spanValues = tableData.locator('td', { hasText: value })
-        await this.clickElement(spanValues);
+        const tableData = table.locator('tbody tr');
+        const tdValues = tableData.locator('td', { hasText: value })
+        await this.clickElement(tdValues);
     }
 
     public async alertGetTextAndAccept(text: string) {
@@ -121,11 +121,18 @@ export class BasePage {
         });
     }
 
-    public async getCurrentMonth() {
+    public async getCurrentMonth(monthNaming: string) {
         let month = new Date();
-        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "Septemer", "October", "November", "December"];
-        const monthString = monthNames[month.getMonth()];
-        return monthString;
+        switch (monthNaming) {
+            case 'fullMonthName':
+                const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+                const monthString = monthNames[month.getMonth()];
+                return monthString;
+            case 'shortMonthName':
+                const monthName = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                const monthStr = monthName[month.getMonth()];
+                return monthStr;
+        }
     }
 
     public async getCurrentYear() {
@@ -134,4 +141,42 @@ export class BasePage {
         return currentYear;
     }
 
+     public async getCurrentDay() {
+        let day = new Date();
+        let currentDay: string = `${(day.getDate())}`;
+        return currentDay;
+    }
+
+    public async clickAndChooseFromDropdownByText(elementLocator: string, text: string) {
+        const locatorList = await this.page.locator(elementLocator).all();
+        for (let element of locatorList) {
+            const elementInnerText = await element.innerText();
+            if (elementInnerText === text) {
+                await element.click();
+                break;
+            }
+        }
+    }
+
+    public async getCurrentUrl() {
+        const title = this.page.url();
+        return title;
+    }
+
+    public async dragAndDrop(source: (string | Locator), target: (string | Locator)) {
+        const sourceElement = source as Locator;
+        const targetElement = target as Locator;
+        if (typeof source === 'string' && typeof target === 'string') {
+            await this.page.locator(source).dragTo(this.page.locator(target))
+        } else if (source === sourceElement && target === targetElement) {
+            await source.dragTo(target);
+        }
+    }
+
+    public async getCurrentMonthAndYear() {
+        const currentMonth = await this.getCurrentMonth('fullMonthName');
+        const currentYear = await this.getCurrentYear();
+        const currentMonthAndYear = `${currentMonth} ${currentYear}`;
+        return currentMonthAndYear;
+    }
 }

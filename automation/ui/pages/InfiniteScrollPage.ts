@@ -8,6 +8,9 @@ export class InfiniteScrollPage extends SchedulerBasePage {
     private calendarComponentLabelLocator = '[class="ant-radio-group ant-radio-group-outline ant-radio-group-default"] label';
     private datePickerMonthYearLabelsLocator = '[class="ant-fullcalendar-header"] label';
     private datePickerYearMonthDropdownSelectorsLocator = '[class="ant-select-selection__rendered"]';
+    private schedulerTableContainerLocator = '#RBS-Scheduler-root';
+    private timeLineEvent = '.timeline-event';
+    private datePickerCalendarBodyLocator = '[class="ant-fullcalendar-calendar-body"]';
 
 
     public async chooseMonthByClickingOnTheArrows(arrow: string) {
@@ -39,10 +42,8 @@ export class InfiniteScrollPage extends SchedulerBasePage {
     }
 
     public async chooseDateFromDatePicker(options?: { monthOrYearLabel?: string, chooseMonthOrYearLabel?: boolean, chooseYearFromDropdown?: boolean, year?: string, customYear?: string }) {
-        const currentMonth = await this.getCurrentMonth();
-        const currentYear = await this.getCurrentYear();
-        const currentMonthAndYear = `${currentMonth} ${currentYear}`;
         const displayedMonth = await this.returnDisplayedMonth();
+        const currentMonthAndYear = await this.getCurrentMonthAndYear();
         if (displayedMonth !== currentMonthAndYear) {
             await this.clickElement(this.monthHeaderLocator);
             if (options?.chooseMonthOrYearLabel && options.monthOrYearLabel !== undefined) {
@@ -69,8 +70,54 @@ export class InfiniteScrollPage extends SchedulerBasePage {
         }
     }
 
-    private async chooseMonthYearLabel(labelName: string) {
+    private async chooseMonthYearLabel(labelName: string, options?: { month?: string, year?: string }) {
+        const currentMonth = await this.getCurrentMonth('shortMonthName');
+        const currentDay = await this.getCurrentDay();
         const monthYearDatePickerLabel = this.page.locator(this.datePickerMonthYearLabelsLocator, { hasText: labelName });
         await this.clickElement(monthYearDatePickerLabel);
+        if (labelName === 'Year' && options?.year !== undefined) {
+            await this.selectValueFromDatePicker(this.datePickerCalendarBodyLocator, options.year);
+        } else {
+            await this.selectValueFromDatePicker(this.datePickerCalendarBodyLocator, currentMonth as string);
+        } if (labelName === 'Month' && options?.month !== undefined) {
+            await this.selectValueFromDatePicker(this.datePickerCalendarBodyLocator, options.month);
+        } else {
+            await this.selectValueFromDatePicker(this.datePickerCalendarBodyLocator, currentDay);
+        }
+    }
+
+    /**
+     * @description schedule an event in a specific cell under a specific column in the scheduler calendar if the cube is empty
+     * @param column 
+     * @param cubeIndex 
+     */
+    public async scheduleEvent(column: string, cubeIndex: number, alertMessage: string) {
+        const calendarCubes: string[] = []
+        const tableRow = this.page.locator(`${this.schedulerTableContainerLocator} tbody tr`);
+        const tableColumn = await this.getColumnTableIndex(this.schedulerTableContainerLocator, column);
+        for (let row of await tableRow.all()) {
+            const cubeTableCell = row.locator('td').nth(tableColumn);
+            const cubeCellInnerText = await cubeTableCell.innerText();
+            if (cubeCellInnerText === '') {
+                calendarCubes.push(cubeCellInnerText);
+            }
+        }
+        await this.clickElement(calendarCubes[cubeIndex]);
+        await this.alertGetTextAndAccept(alertMessage);
+    }
+
+    public async countEventsOnCalendar() {
+        const timeLineEvent = this.page.locator(this.timeLineEvent);
+        const timeLineCount = await timeLineEvent.count();
+        return timeLineCount;
+    }
+
+    /**
+     * @description clicks on an event in the schedular
+     */
+    public async clickOnEvent(eventName: string, alertPopupMessage: string) {
+        const event = this.page.locator(this.timeLineEvent, { hasText: eventName });
+        await this.clickElement(event);
+        await this.alertGetTextAndAccept(alertPopupMessage);
     }
 }
