@@ -91,6 +91,16 @@ The rest of the project folders contain folders for all of the project's infra s
 * interfaces
 * navigation enums
 
+## Contributing
+
+Contributions are always welcome!
+
+You can fork the project and submit a PR that will under go a code review.
+
+## Feedback
+
+I hope you enjoyed my project, If you have any feedback, please reach out to me at romario.nijim11@gmail.com
+
 ## Notes
 
 * some of the API endpoints for the petstore responds with an invalid response when performing negative testing methods
@@ -102,13 +112,4 @@ The rest of the project folders contain folders for all of the project's infra s
   * the schedular does not save your created events which lacks the core functionality of the scheduler.
   * the displayed date keeps between months on every movement on the page which makes very unstable - the same goes for the date view, everytime you displayt he same date it always gives you a different view which can interfere with the test validations
  
-## Contributing
-
-Contributions are always welcome!
-
-You can fork the project and submit a PR that will under go a code review.
-
-## Feedback
-
-I hope you enjoyed my project, If you have any feedback, please reach out to me at romario.nijim11@gmail.com
 
