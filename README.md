@@ -1,7 +1,7 @@
 
 # Test Automation UI&API project
 
-Test Automation project for testin web applications and APIs
+Test Automation project for testing web applications and APIs
 
 ## Project Description
 This Project was done by using the `Playwright Test Automation Framework` using TypeScript for both UI E2E testing and for API testing.
