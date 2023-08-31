@@ -23,7 +23,7 @@ Clone the project by opening the terminal in your code IDE and run the following
   git clone https://github.com/RomarioNijimAlmond/Playwright-api-ui.git
 ```
 
-Go to the project directory
+Navigate to the project directory
 
 ```bash
   cd automation
