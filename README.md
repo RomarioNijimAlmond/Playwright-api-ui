@@ -17,7 +17,7 @@ petstore APIs - https://petstore.swagger.io/?fbclid=IwAR0IJGoXI4F2sWcQ3S-7ukN9KO
 
 ## Clone Project
 
-Clone the project by opening terminal in your code IDE and run the following command:
+Clone the project by opening the terminal in your code IDE and run the following command:
 
 ```bash
   git clone https://github.com/RomarioNijimAlmond/Playwright-api-ui.git
