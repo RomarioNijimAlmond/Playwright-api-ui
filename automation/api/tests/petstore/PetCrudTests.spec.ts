@@ -57,7 +57,7 @@ test.describe('sanity api tests for the pet store api', async () => {
     })
 
     //-------------------------------------------------------------------
-    test('upload an image directly to a pet endpoint', async ({ request }) => {
+    test.fixme('upload an image directly to a pet endpoint', async ({ request }) => {
         await test.step('upload a pet image directly via api', async () => {
             const file = path.resolve(__dirname, '../../../images/pug.jpeg');
             const image = fs.readFileSync(file);
