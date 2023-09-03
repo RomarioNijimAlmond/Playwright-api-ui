@@ -71,7 +71,7 @@ In order to run a specific spec folder, you have two options:
 ```
 * dont forget to remove the `.only` when your done!
   
-open a terminal in your IDE in the same directory where the tests are located and run the following command to ru all of the tests in the correct order:
+open a terminal in your IDE in the same directory where the tests are located and run the following command to run all of the tests in the correct order:
 ```bash
   npx playwright test --workers=1
 ```
