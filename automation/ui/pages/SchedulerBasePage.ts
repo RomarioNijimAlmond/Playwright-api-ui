@@ -4,7 +4,7 @@ export class SchedulerBasePage extends BasePage {
     private schedularLinkOptions = '#root a';
 
     public async chooseSchedulerLinkOption(linkName: string) {
-        await this.clickAndChooseFromDropdownByText(this.schedularLinkOptions, linkName);
+        await this.clickAndChooseFromListByText(this.schedularLinkOptions, linkName);
     }
 
     public async getColumnTableIndex(tableRowLocator: string, column: string) {

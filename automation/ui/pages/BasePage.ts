@@ -153,7 +153,7 @@ export class BasePage {
         return currentDay;
     }
 
-    public async clickAndChooseFromDropdownByText(elementLocator: string, text: string) {
+    public async clickAndChooseFromListByText(elementLocator: string, text: string) {
         const locatorList = await this.page.locator(elementLocator).all();
         for (let element of locatorList) {
             const elementInnerText = await element.innerText();
